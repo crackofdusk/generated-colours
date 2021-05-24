@@ -1,11 +1,13 @@
 module Main exposing (..)
 
+import Browser
+import Circle exposing (Circle)
 import Html exposing (Html, text)
 import Html.Attributes
+import Random exposing (Generator)
 import Svg exposing (Svg)
 import Svg.Attributes
-import Random exposing (Generator)
-import Circle exposing (Circle)
+
 
 
 -- MODEL
@@ -15,8 +17,8 @@ type alias Model =
     { circles : List Circle }
 
 
-init : ( Model, Cmd Msg )
-init =
+init : () -> ( Model, Cmd Msg )
+init _ =
     ( { circles = [] }
     , Random.generate CirclesGenerated circlesGenerator
     )
@@ -72,12 +74,10 @@ numberOfCircles =
 container : Html msg -> Html msg
 container element =
     Html.div
-        [ Html.Attributes.style
-            [ ( "display", "flex" )
-            , ( "justify-content", "center" )
-            , ( "align-items", "center" )
-            , ( "height", "100%" )
-            ]
+        [ Html.Attributes.style "display" "flex"
+        , Html.Attributes.style "justify-content" "center"
+        , Html.Attributes.style "align-items" "center"
+        , Html.Attributes.style "height" "100%"
         ]
         [ element ]
 
@@ -85,9 +85,9 @@ container element =
 canvas : Float -> List (Svg msg) -> Svg msg
 canvas size elements =
     Svg.svg
-        [ Svg.Attributes.viewBox ("0 0 " ++ toString size ++ " " ++ toString size)
-        , Svg.Attributes.width (toString size)
-        , Svg.Attributes.height (toString size)
+        [ Svg.Attributes.viewBox ("0 0 " ++ String.fromFloat size ++ " " ++ String.fromFloat size)
+        , Svg.Attributes.width (String.fromFloat size)
+        , Svg.Attributes.height (String.fromFloat size)
         ]
         elements
 
@@ -96,9 +96,9 @@ canvas size elements =
 -- MAIN
 
 
-main : Program Never Model Msg
+main : Program () Model Msg
 main =
-    Html.program
+    Browser.element
         { init = init
         , view = view
         , update = update
