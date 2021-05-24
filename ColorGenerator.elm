@@ -61,6 +61,25 @@ hueAndLightness baseColor =
         (Random.float -0.3 0.3)
 
 
+hueAndAlpha : Color -> Generator Color
+hueAndAlpha baseColor =
+    let
+        { hue, saturation, lightness } =
+            Color.toHsla baseColor
+    in
+    Random.map2
+        (\hueDeviation alpha ->
+            Color.fromHsla
+                { hue = hue + hueDeviation
+                , saturation = saturation
+                , lightness = lightness
+                , alpha = alpha
+                }
+        )
+        (Random.float -0.05 0.05)
+        (Random.float 0 1)
+
+
 randomRGB : Generator Color
 randomRGB =
     Random.map3 Color.rgb255
@@ -121,3 +140,21 @@ hueOnly baseColor =
                 }
         )
         (Random.float -0.05 0.05)
+
+
+alphaOnly : Color -> Generator Color
+alphaOnly baseColor =
+    let
+        { hue, saturation, lightness } =
+            Color.toHsla baseColor
+    in
+    Random.map
+        (\alpha ->
+            Color.fromHsla
+                { hue = hue
+                , saturation = saturation
+                , lightness = lightness
+                , alpha = alpha
+                }
+        )
+        (Random.float 0 1)

@@ -41,10 +41,12 @@ colorGenerators color =
     [ ( "Lightness", ColorGenerator.lightnessOnly color )
     , ( "Saturation", ColorGenerator.saturationOnly color )
     , ( "Hue", ColorGenerator.hueOnly color )
-    , ( "Random RGB (no base colour)", ColorGenerator.randomRGB )
+    , ( "Alpha", ColorGenerator.alphaOnly color )
     , ( "Saturation and lightness", ColorGenerator.saturationAndLightness color )
     , ( "Hue and saturation", ColorGenerator.hueAndSaturation color )
     , ( "Hue and lightness", ColorGenerator.hueAndLightness color )
+    , ( "Hue and alpha", ColorGenerator.hueAndAlpha color )
+    , ( "Random RGB (no base colour)", ColorGenerator.randomRGB )
     ]
 
 
