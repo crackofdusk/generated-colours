@@ -38,7 +38,7 @@ hueAndSaturation baseColor =
                 , alpha = alpha
                 }
         )
-        (Random.float -0.15 0.15)
+        (Random.float -0.1 0.1)
         (Random.float -0.4 0.4)
 
 
@@ -57,7 +57,7 @@ hueAndLightness baseColor =
                 , alpha = alpha
                 }
         )
-        (Random.float -0.15 0.15)
+        (Random.float -0.1 0.1)
         (Random.float -0.3 0.3)
 
 
