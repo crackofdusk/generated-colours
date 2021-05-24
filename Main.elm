@@ -3,6 +3,7 @@ module Main exposing (..)
 import Browser
 import Circle exposing (Circle)
 import Color exposing (Color)
+import ColorGenerator
 import Html exposing (Html, text)
 import Html.Attributes
 import Random exposing (Generator)
@@ -33,6 +34,7 @@ circlesGenerator =
             , minRadius = minRadius
             , maxRadius = maxRadius
             , baseColor = baseColor
+            , colorGenerator = ColorGenerator.saturationAndLightness
             }
         )
 
@@ -66,7 +68,7 @@ view model =
 
 minRadius : Float
 minRadius =
-    30
+    20
 
 
 maxRadius : Float
@@ -76,12 +78,12 @@ maxRadius =
 
 canvasWidth : Float
 canvasWidth =
-    800
+    400
 
 
 numberOfCircles : Int
 numberOfCircles =
-    400
+    150
 
 
 baseColor : Color
