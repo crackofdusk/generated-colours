@@ -38,10 +38,13 @@ init _ =
 
 colorGenerators : Color -> List ( String, Generator Color )
 colorGenerators color =
-    [ ( "Saturation and lightness", ColorGenerator.saturationAndLightness color )
+    [ ( "Lightness", ColorGenerator.lightnessOnly color )
+    , ( "Saturation", ColorGenerator.saturationOnly color )
+    , ( "Hue", ColorGenerator.hueOnly color )
+    , ( "Random RGB (no base colour)", ColorGenerator.randomRGB )
+    , ( "Saturation and lightness", ColorGenerator.saturationAndLightness color )
     , ( "Hue and saturation", ColorGenerator.hueAndSaturation color )
     , ( "Hue and lightness", ColorGenerator.hueAndLightness color )
-    , ( "Random RGB (no base colour)", ColorGenerator.randomRGB )
     ]
 
 

@@ -67,3 +67,57 @@ randomRGB =
         (Random.int 0 255)
         (Random.int 0 255)
         (Random.int 0 255)
+
+
+saturationOnly : Color -> Generator Color
+saturationOnly baseColor =
+    let
+        { hue, lightness, alpha } =
+            Color.toHsla baseColor
+    in
+    Random.map
+        (\saturation ->
+            Color.fromHsla
+                { hue = hue
+                , saturation = saturation
+                , lightness = lightness
+                , alpha = alpha
+                }
+        )
+        (Random.float 0 1)
+
+
+lightnessOnly : Color -> Generator Color
+lightnessOnly baseColor =
+    let
+        { hue, saturation, alpha } =
+            Color.toHsla baseColor
+    in
+    Random.map
+        (\lightness ->
+            Color.fromHsla
+                { hue = hue
+                , saturation = saturation
+                , lightness = lightness
+                , alpha = alpha
+                }
+        )
+        (Random.float 0 1)
+
+
+hueOnly : Color -> Generator Color
+hueOnly baseColor =
+    let
+        { hue, saturation, lightness, alpha } =
+            Color.toHsla baseColor
+    in
+    Random.map
+        (\hueDeviation ->
+            Color.fromHsla
+                { hue = hue + hueDeviation
+                , saturation = saturation
+                , lightness = lightness
+                , alpha = alpha
+                }
+        )
+        (Random.float -0.05 0.05)
