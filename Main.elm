@@ -58,17 +58,17 @@ view model =
 
 radius : Float
 radius =
-    100
+    50
 
 
 canvasWidth : Float
 canvasWidth =
-    1000
+    800
 
 
 numberOfCircles : Int
 numberOfCircles =
-    100
+    250
 
 
 container : Html msg -> Html msg
@@ -77,7 +77,7 @@ container element =
         [ Html.Attributes.style "display" "flex"
         , Html.Attributes.style "justify-content" "center"
         , Html.Attributes.style "align-items" "center"
-        , Html.Attributes.style "height" "100%"
+        , Html.Attributes.style "height" "100vh"
         ]
         [ element ]
 
