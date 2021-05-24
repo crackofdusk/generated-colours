@@ -27,7 +27,14 @@ init _ =
 
 circlesGenerator : Generator (List Circle)
 circlesGenerator =
-    Random.list numberOfCircles (Circle.generator canvasWidth baseColor)
+    Random.list numberOfCircles
+        (Circle.generator
+            { canvasWidth = canvasWidth
+            , minRadius = minRadius
+            , maxRadius = maxRadius
+            , baseColor = baseColor
+            }
+        )
 
 
 
@@ -52,13 +59,18 @@ update message model =
 view : Model -> Html msg
 view model =
     model.circles
-        |> List.map (Circle.draw radius)
+        |> List.map Circle.draw
         |> canvas canvasWidth
         |> container
 
 
-radius : Float
-radius =
+minRadius : Float
+minRadius =
+    30
+
+
+maxRadius : Float
+maxRadius =
     50
 
 
@@ -69,7 +81,7 @@ canvasWidth =
 
 numberOfCircles : Int
 numberOfCircles =
-    250
+    400
 
 
 baseColor : Color

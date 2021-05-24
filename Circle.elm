@@ -7,17 +7,17 @@ import Svg.Attributes
 
 
 type alias Circle =
-    { center : Point, color : Color }
+    { center : Point, radius : Float, color : Color }
 
 
 type alias Point =
     { x : Float, y : Float }
 
 
-draw : Float -> Circle -> Svg msg
-draw radius circle =
+draw : Circle -> Svg msg
+draw circle =
     Svg.circle
-        [ Svg.Attributes.r (String.fromFloat radius)
+        [ Svg.Attributes.r (String.fromFloat circle.radius)
         , Svg.Attributes.cx (String.fromFloat circle.center.x)
         , Svg.Attributes.cy (String.fromFloat circle.center.y)
         , Svg.Attributes.fill (rgba circle.color)
@@ -30,14 +30,28 @@ rgba color =
     Color.toCssString color
 
 
-generator : Float -> Color -> Generator Circle
-generator max baseColor =
-    Random.map2 Circle (pointGenerator max) (colorGenerator baseColor)
+generator :
+    { canvasWidth : Float
+    , minRadius : Float
+    , maxRadius : Float
+    , baseColor : Color
+    }
+    -> Generator Circle
+generator { canvasWidth, minRadius, maxRadius, baseColor } =
+    Random.map3 Circle
+        (pointGenerator canvasWidth)
+        (radiusGenerator minRadius maxRadius)
+        (colorGenerator baseColor)
 
 
 pointGenerator : Float -> Generator Point
 pointGenerator max =
     Random.map2 Point (Random.float 0 max) (Random.float 0 max)
+
+
+radiusGenerator : Float -> Float -> Generator Float
+radiusGenerator min max =
+    Random.float min max
 
 
 colorGenerator : Color -> Generator Color
