@@ -21,3 +21,49 @@ saturationAndLightness baseColor =
         )
         (Random.float -0.15 0.15)
         (Random.float -0.4 0.4)
+
+
+hueAndSaturation : Color -> Generator Color
+hueAndSaturation baseColor =
+    let
+        { hue, saturation, lightness, alpha } =
+            Color.toHsla baseColor
+    in
+    Random.map2
+        (\hueDeviation saturationDeviation ->
+            Color.fromHsla
+                { hue = hue + hueDeviation
+                , saturation = saturation + saturationDeviation
+                , lightness = lightness
+                , alpha = alpha
+                }
+        )
+        (Random.float -0.15 0.15)
+        (Random.float -0.4 0.4)
+
+
+hueAndLightness : Color -> Generator Color
+hueAndLightness baseColor =
+    let
+        { hue, saturation, lightness, alpha } =
+            Color.toHsla baseColor
+    in
+    Random.map2
+        (\hueDeviation lightnessDeviation ->
+            Color.fromHsla
+                { hue = hue + hueDeviation
+                , saturation = saturation
+                , lightness = lightness + lightnessDeviation
+                , alpha = alpha
+                }
+        )
+        (Random.float -0.15 0.15)
+        (Random.float -0.3 0.3)
+
+
+randomRGB : Generator Color
+randomRGB =
+    Random.map3 Color.rgb255
+        (Random.int 0 255)
+        (Random.int 0 255)
+        (Random.int 0 255)

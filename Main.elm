@@ -16,27 +16,72 @@ import Svg.Attributes
 
 
 type alias Model =
-    { circles : List Circle }
+    { variations : List Variation }
+
+
+type alias Variation =
+    { name : String
+    , circles : List Circle
+    }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { circles = [] }
-    , Random.generate CirclesGenerated circlesGenerator
+    ( { variations = [] }
+    , Random.generate VariationsGenerated variationsGenerator
     )
 
 
-circlesGenerator : Generator (List Circle)
-circlesGenerator =
+
+--- GENERATORS
+
+
+colorGenerators : Color -> List ( String, Generator Color )
+colorGenerators color =
+    [ ( "Saturation and lightness", ColorGenerator.saturationAndLightness color )
+    , ( "Hue and saturation", ColorGenerator.hueAndSaturation color )
+    , ( "Hue and lightness", ColorGenerator.hueAndLightness color )
+    , ( "Random RGB (no base colour)", ColorGenerator.randomRGB )
+    ]
+
+
+variationsGenerator : Generator (List Variation)
+variationsGenerator =
+    colorGenerators baseColor
+        |> List.map
+            (\tuple ->
+                variationGenerator (Tuple.first tuple) (Tuple.second tuple)
+            )
+        |> combineGenerators
+
+
+variationGenerator : String -> Generator Color -> Generator Variation
+variationGenerator name colorGenerator =
+    Random.map
+        (\circles -> Variation name circles)
+        (circlesGenerator colorGenerator)
+
+
+circlesGenerator : Generator Color -> Generator (List Circle)
+circlesGenerator colorGenerator =
     Random.list numberOfCircles
         (Circle.generator
             { canvasWidth = canvasWidth
             , minRadius = minRadius
             , maxRadius = maxRadius
-            , baseColor = baseColor
-            , colorGenerator = ColorGenerator.saturationAndLightness
+            , colorGenerator = colorGenerator
             }
         )
+
+
+combineGenerators : List (Generator a) -> Generator (List a)
+combineGenerators generators =
+    case generators of
+        [] ->
+            Random.constant []
+
+        g :: gs ->
+            Random.map2 (::) g (combineGenerators gs)
 
 
 
@@ -44,14 +89,14 @@ circlesGenerator =
 
 
 type Msg
-    = CirclesGenerated (List Circle)
+    = VariationsGenerated (List Variation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update message model =
     case message of
-        CirclesGenerated circles ->
-            ( { model | circles = circles }, Cmd.none )
+        VariationsGenerated variations ->
+            ( { model | variations = variations }, Cmd.none )
 
 
 
@@ -60,10 +105,82 @@ update message model =
 
 view : Model -> Html msg
 view model =
-    model.circles
-        |> List.map Circle.draw
-        |> canvas canvasWidth
-        |> container
+    Html.div
+        [ Html.Attributes.style "padding" "2rem"
+        , Html.Attributes.style "font-family" "monospace"
+        , Html.Attributes.style "font-size" "1.25rem"
+        , Html.Attributes.style "color" "#333"
+        ]
+        [ Html.h1
+            [ Html.Attributes.style "margin" "0"
+            ]
+            [ Html.text "Study of generated colours" ]
+        , Html.div [ Html.Attributes.style "margin-top" "3rem" ]
+            [ Html.h2
+                [ Html.Attributes.style "margin" "0 0 1rem 0" ]
+                [ Html.text "Base color" ]
+            , viewColor baseColor
+            ]
+        , Html.div
+            [ Html.Attributes.style "margin-top" "3rem" ]
+            [ Html.h2
+                [ Html.Attributes.style "margin" "0" ]
+                [ Html.text "Variations" ]
+            , Html.div
+                [ Html.Attributes.style "display" "flex"
+                , Html.Attributes.style "flex-wrap" "wrap"
+                , Html.Attributes.style "gap" "2rem"
+                , Html.Attributes.style "margin-top" "1rem"
+                ]
+                (List.map viewVariation model.variations)
+            ]
+        ]
+
+
+viewColor : Color -> Html msg
+viewColor color =
+    let
+        { hue, saturation, lightness, alpha } =
+            Color.toHsla color
+    in
+    Html.div
+        [ Html.Attributes.style "display" "flex"
+        , Html.Attributes.style "flex-wrap" "wrap"
+        , Html.Attributes.style "gap" "1rem"
+        ]
+        [ Html.div
+            [ Html.Attributes.style "background-color" (Color.toCssString color)
+            , Html.Attributes.style "width" "5rem"
+            , Html.Attributes.style "height" "5rem"
+            ]
+            []
+        , Html.div
+            [ Html.Attributes.style "font-size" "1rem"
+            , Html.Attributes.style "line-height" "1.25rem"
+            ]
+            [ Html.div [] [ Html.text ("Hue: " ++ percentString hue) ]
+            , Html.div [] [ Html.text ("Saturation: " ++ percentString saturation) ]
+            , Html.div [] [ Html.text ("Lightness: " ++ percentString lightness) ]
+            , Html.div [] [ Html.text ("Alpha: " ++ percentString alpha) ]
+            ]
+        ]
+
+
+percentString : Float -> String
+percentString n =
+    String.fromInt (round (n * 100)) ++ "%"
+
+
+viewVariation : Variation -> Html msg
+viewVariation variation =
+    Html.figure
+        [ Html.Attributes.style "margin" "0"
+        ]
+        [ variation.circles
+            |> List.map Circle.draw
+            |> canvas canvasWidth
+        , Html.figcaption [] [ Html.text variation.name ]
+        ]
 
 
 minRadius : Float
@@ -94,17 +211,6 @@ baseColor =
         , lightness = 0.5
         , alpha = 1
         }
-
-
-container : Html msg -> Html msg
-container element =
-    Html.div
-        [ Html.Attributes.style "display" "flex"
-        , Html.Attributes.style "justify-content" "center"
-        , Html.Attributes.style "align-items" "center"
-        , Html.Attributes.style "height" "100vh"
-        ]
-        [ element ]
 
 
 canvas : Float -> List (Svg msg) -> Svg msg

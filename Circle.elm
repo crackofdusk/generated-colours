@@ -34,15 +34,14 @@ generator :
     { canvasWidth : Float
     , minRadius : Float
     , maxRadius : Float
-    , baseColor : Color
-    , colorGenerator : Color -> Generator Color
+    , colorGenerator : Generator Color
     }
     -> Generator Circle
-generator { canvasWidth, minRadius, maxRadius, baseColor, colorGenerator } =
+generator { canvasWidth, minRadius, maxRadius, colorGenerator } =
     Random.map3 Circle
         (pointGenerator canvasWidth)
         (radiusGenerator minRadius maxRadius)
-        (colorGenerator baseColor)
+        colorGenerator
 
 
 pointGenerator : Float -> Generator Point
