@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Browser
 import Circle exposing (Circle)
+import Color exposing (Color)
 import Html exposing (Html, text)
 import Html.Attributes
 import Random exposing (Generator)
@@ -26,7 +27,7 @@ init _ =
 
 circlesGenerator : Generator (List Circle)
 circlesGenerator =
-    Random.list numberOfCircles (Circle.generator canvasWidth)
+    Random.list numberOfCircles (Circle.generator canvasWidth baseColor)
 
 
 
@@ -69,6 +70,16 @@ canvasWidth =
 numberOfCircles : Int
 numberOfCircles =
     250
+
+
+baseColor : Color
+baseColor =
+    Color.fromHsla
+        { hue = 0.1
+        , saturation = 0.85
+        , lightness = 0.5
+        , alpha = 1
+        }
 
 
 container : Html msg -> Html msg

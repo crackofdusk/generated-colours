@@ -30,9 +30,9 @@ rgba color =
     Color.toCssString color
 
 
-generator : Float -> Generator Circle
-generator max =
-    Random.map2 Circle (pointGenerator max) colorGenerator
+generator : Float -> Color -> Generator Circle
+generator max baseColor =
+    Random.map2 Circle (pointGenerator max) (colorGenerator baseColor)
 
 
 pointGenerator : Float -> Generator Point
@@ -40,6 +40,20 @@ pointGenerator max =
     Random.map2 Point (Random.float 0 max) (Random.float 0 max)
 
 
-colorGenerator : Generator Color
-colorGenerator =
-    Random.map3 Color.rgb255 (Random.int 0 255) (Random.int 0 255) (Random.int 0 255)
+colorGenerator : Color -> Generator Color
+colorGenerator baseColor =
+    let
+        { hue, saturation, lightness, alpha } =
+            Color.toHsla baseColor
+    in
+    Random.map2
+        (\saturationDeviation lightnessDeviation ->
+            Color.fromHsla
+                { hue = hue
+                , saturation = saturation + saturationDeviation
+                , lightness = lightness + lightnessDeviation
+                , alpha = alpha
+                }
+        )
+        (Random.float -0.15 0.15)
+        (Random.float -0.4 0.4)
