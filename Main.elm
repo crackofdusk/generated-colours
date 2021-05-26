@@ -117,9 +117,13 @@ view model =
         , Html.Attributes.style "color" "#333"
         ]
         [ Html.h1
-            [ Html.Attributes.style "margin" "0"
-            ]
+            [ Html.Attributes.style "margin" "0" ]
             [ Html.text "Study of generated colours" ]
+        , Html.p []
+            [ Html.a
+                [ Html.Attributes.href "https://github.com/crackofdusk/generated-colours" ]
+                [ Html.text "Source code" ]
+            ]
         , Html.div [ Html.Attributes.style "margin-top" "3rem" ]
             [ Html.h2
                 [ Html.Attributes.style "margin" "0 0 1rem 0" ]
