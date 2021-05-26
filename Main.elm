@@ -127,7 +127,7 @@ view model =
         , Html.div [ Html.Attributes.style "margin-top" "3rem" ]
             [ Html.h2
                 [ Html.Attributes.style "margin" "0 0 1rem 0" ]
-                [ Html.text "Base color" ]
+                [ Html.text "Base colour" ]
             , viewColor baseColor
             ]
         , Html.div
