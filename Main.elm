@@ -108,42 +108,46 @@ update message model =
 -- VIEW
 
 
-view : Model -> Html msg
+view : Model -> Browser.Document msg
 view model =
-    Html.div
-        [ Html.Attributes.style "padding" "2rem"
-        , Html.Attributes.style "font-family" "monospace"
-        , Html.Attributes.style "font-size" "1.25rem"
-        , Html.Attributes.style "color" "#333"
-        ]
-        [ Html.h1
-            [ Html.Attributes.style "margin" "0" ]
-            [ Html.text "Study of generated colours" ]
-        , Html.p []
-            [ Html.a
-                [ Html.Attributes.href "https://github.com/crackofdusk/generated-colours" ]
-                [ Html.text "Source code" ]
+    { title = "Study of generated colours"
+    , body =
+        [ Html.div
+            [ Html.Attributes.style "padding" "2rem"
+            , Html.Attributes.style "font-family" "monospace"
+            , Html.Attributes.style "font-size" "1.25rem"
+            , Html.Attributes.style "color" "#333"
             ]
-        , Html.div [ Html.Attributes.style "margin-top" "3rem" ]
-            [ Html.h2
-                [ Html.Attributes.style "margin" "0 0 1rem 0" ]
-                [ Html.text "Base colour" ]
-            , viewColor baseColor
-            ]
-        , Html.div
-            [ Html.Attributes.style "margin-top" "3rem" ]
-            [ Html.h2
+            [ Html.h1
                 [ Html.Attributes.style "margin" "0" ]
-                [ Html.text "Variations" ]
-            , Html.div
-                [ Html.Attributes.style "display" "flex"
-                , Html.Attributes.style "flex-wrap" "wrap"
-                , Html.Attributes.style "gap" "2rem"
-                , Html.Attributes.style "margin-top" "1rem"
+                [ Html.text "Study of generated colours" ]
+            , Html.p []
+                [ Html.a
+                    [ Html.Attributes.href "https://github.com/crackofdusk/generated-colours" ]
+                    [ Html.text "Source code" ]
                 ]
-                (List.map viewVariation model.variations)
+            , Html.div [ Html.Attributes.style "margin-top" "3rem" ]
+                [ Html.h2
+                    [ Html.Attributes.style "margin" "0 0 1rem 0" ]
+                    [ Html.text "Base colour" ]
+                , viewColor baseColor
+                ]
+            , Html.div
+                [ Html.Attributes.style "margin-top" "3rem" ]
+                [ Html.h2
+                    [ Html.Attributes.style "margin" "0" ]
+                    [ Html.text "Variations" ]
+                , Html.div
+                    [ Html.Attributes.style "display" "flex"
+                    , Html.Attributes.style "flex-wrap" "wrap"
+                    , Html.Attributes.style "gap" "2rem"
+                    , Html.Attributes.style "margin-top" "1rem"
+                    ]
+                    (List.map viewVariation model.variations)
+                ]
             ]
         ]
+    }
 
 
 viewColor : Color -> Html msg
@@ -238,7 +242,7 @@ canvas size elements =
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.document
         { init = init
         , view = view
         , update = update
